@@ -8,16 +8,41 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cryptocurrency.presentation.ui.theme.MyApplicationTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 
+import androidx.navigation.compose.rememberNavController
+import com.example.cryptocurrency.presentation.coin_detail.CoinDetailScreen
+import com.example.cryptocurrency.presentation.coin_list.CoinListScreen
+import com.example.cryptocurrency.presentation.ui.theme.CryptoCurrencyTheme
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApplicationTheme {
+            CryptoCurrencyTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+//                    Greeting("Android")
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.CoinListScreen.route
+                    )
+                    {
+                        composable(
+                            route = Screen.CoinListScreen.route
+                        )
+                        {
+                            CoinListScreen(navController)
+                        }
+                        composable(route = Screen.CoinDetailScreen.route + "/{coinId}")
+                        {
+                            CoinDetailScreen()
+                        }
+                    }
                 }
             }
         }
@@ -32,7 +57,7 @@ fun Greeting(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    MyApplicationTheme {
+    CryptoCurrencyTheme {
         Greeting("Android")
     }
 }

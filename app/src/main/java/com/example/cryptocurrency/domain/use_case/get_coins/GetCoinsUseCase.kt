@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.util.*
 import javax.inject.Inject
 
 class GetCoinsUseCase @Inject constructor(
@@ -20,18 +19,18 @@ class GetCoinsUseCase @Inject constructor(
     // emit data i.e. list of coins
     operator fun invoke(): Flow<Resource<List<Coin>>> = flow {
         try {
-            emit(Resource.Loading())
+            emit(Resource.Loading<List<Coin>>())
             val coins = repository.getCoins().map {
                 it.toCoin()
             }
-            emit(Resource.Success(coins))
+            emit(Resource.Success<List<Coin>>(coins))
 
         } catch (e: HttpException) {
-            emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
+            emit(Resource.Error<List<Coin>>(e.localizedMessage ?: "Unexpected error occurred"))
 
         } catch (e: IOException) {
             emit(
-                Resource.Error(
+                Resource.Error<List<Coin>>(
                     e.localizedMessage ?: "Couldn't reach server. Check you internet connection."
                 )
             )
